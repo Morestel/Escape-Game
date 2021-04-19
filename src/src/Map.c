@@ -19,7 +19,7 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     //la
     glEnable(GL_TEXTURE_2D);
 
-    int width = 1000, height = 1000;
+    int width = 300, height = 300;
     FILE * file;
     unsigned char * data;
     file = fopen("mur.bmp", "rb" );
