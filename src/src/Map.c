@@ -33,14 +33,17 @@ Mur creer_mur(Point p1, Point p2, int traversable){
 
     //On la bind
     glBindTexture(GL_TEXTURE_2D, id_texture);
-/*
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-*/
-    //On charge l'image dans la texture OPENGL
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-    //On genere le Mipmap
-    //glGenerateMipmap(GL_TEXTURE_2D);
+   gluBuild2DMipmaps(GL_TEXTURE_2D,     // texture to specify
+                     GL_RGBA,           // internal texture storage format
+                     width,             // texture width
+                     height,            // texture height
+                     GL_RGBA,           // pixel format
+                     GL_UNSIGNED_BYTE,	// color component format
+                     data);    // pointer to texture image
+   glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR_MIPMAP_LINEAR);
+   glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
 
 glBindTexture(GL_TEXTURE_2D, id_texture);
