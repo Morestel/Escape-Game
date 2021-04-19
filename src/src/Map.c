@@ -44,6 +44,7 @@ Mur creer_mur(Point p1, Point p2, int traversable){
    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
    glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  width,  height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 
 glBindTexture(GL_TEXTURE_2D, id_texture);
