@@ -58,21 +58,31 @@ glBindTexture(GL_TEXTURE_2D, id_texture);
     glVertex3i(p1.x, p2.y, p1.z);
     
     // Seconde face
+    glTexCoord2d(0,1);
     glVertex3i(p2.x, p2.y, p2.z);
+    glTexCoord2d(0,0);
     glVertex3i(p1.x, p2.y, p2.z);
     glVertex3i(p1.x, p1.y, p2.z);
     glVertex3i(p2.x, p1.y, p2.z);
     
     // Premiere jointure
+    glTexCoord2d(0,1);
     glVertex3i(p2.x, p2.y, p2.z);
+    glTexCoord2d(0,0);
     glVertex3i(p2.x, p2.y, p1.z);
+    glTexCoord2d(1,0);
     glVertex3i(p2.x, p1.y, p1.z);
+    glTexCoord2d(1,1);
     glVertex3i(p2.x, p1.y, p2.z);
     
     // Seconde jointure
+    glTexCoord2d(0,1);
     glVertex3i(p1.x, p1.y, p1.z);
+    glTexCoord2d(0,0);
     glVertex3i(p1.x, p2.y, p1.z);
+    glTexCoord2d(1,0);
     glVertex3i(p1.x, p2.y, p2.z);
+    glTexCoord2d(1,1);
     glVertex3i(p1.x, p1.y, p2.z);
     
     glEnd();
