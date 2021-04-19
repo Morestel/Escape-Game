@@ -44,53 +44,50 @@ Mur creer_mur(Point p1, Point p2, int traversable){
    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
    glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  width,  height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-//Pour la transparence
-       glEnable(GL_BLEND);
-       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-glBindTexture(GL_TEXTURE_2D, id_texture);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, id_texture);
     glBegin(GL_QUADS);
     
 
     // Premiere face
-    glTexCoord2d(0,1);
+    glTexCoord2d(0.0,1.0);
     glVertex3i(p1.x, p1.y, p1.z);
-    glTexCoord2d(0,0);
+    glTexCoord2d(0.0,0.0.0);
     glVertex3i(p2.x, p1.y, p1.z);
-    glTexCoord2d(1,0);
+    glTexCoord2d(1.0,0.0);
     glVertex3i(p2.x, p2.y, p1.z);
-    glTexCoord2d(1,1);
+    glTexCoord2d(1.0,1.0);
     glVertex3i(p1.x, p2.y, p1.z);
     
     // Seconde face
-    glTexCoord2d(0,1);
+    glTexCoord2d(0.0,1.0);
     glVertex3i(p2.x, p2.y, p2.z);
-    glTexCoord2d(0,0);
+    glTexCoord2d(0.0,0.0);
     glVertex3i(p1.x, p2.y, p2.z);
-    glTexCoord2d(1,0);
+    glTexCoord2d(1.0,0.0);
     glVertex3i(p1.x, p1.y, p2.z);
-    glTexCoord2d(1,1);
+    glTexCoord2d(1.0,1.0);
     glVertex3i(p2.x, p1.y, p2.z);
     
     // Premiere jointure
-    glTexCoord2d(0,1);
+    glTexCoord2d(0.0,1.0);
     glVertex3i(p2.x, p2.y, p2.z);
-    glTexCoord2d(0,0);
+    glTexCoord2d(0.0,0.0);
     glVertex3i(p2.x, p2.y, p1.z);
-    glTexCoord2d(1,0);
+    glTexCoord2d(1.0,0.0);
     glVertex3i(p2.x, p1.y, p1.z);
-    glTexCoord2d(1,1);
+    glTexCoord2d(1.0,1.0);
     glVertex3i(p2.x, p1.y, p2.z);
     
     // Seconde jointure
-    glTexCoord2d(0,1);
+    glTexCoord2d(0.0,1.0);
     glVertex3i(p1.x, p1.y, p1.z);
-    glTexCoord2d(0,0);
+    glTexCoord2d(0.0,0.0);
     glVertex3i(p1.x, p2.y, p1.z);
-    glTexCoord2d(1,0);
+    glTexCoord2d(1.0,0.0);
     glVertex3i(p1.x, p2.y, p2.z);
-    glTexCoord2d(1,1);
+    glTexCoord2d(1.0,1.0);
     glVertex3i(p1.x, p1.y, p2.z);
     
     glEnd();
