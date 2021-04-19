@@ -17,6 +17,8 @@ void keyUp(unsigned char key, int x, int y);
 Camera c;
 Mur m;
 
+Texture t;
+
 int main(int argc, char** argv){
 
     glutInit(&argc, argv);
@@ -29,7 +31,7 @@ int main(int argc, char** argv){
 
     cameraInit(&c);
     murInit(&m);
-
+    t = Charger_Texture("mur.bmp", 300, 300);
     glutDisplayFunc(Affichage);
     glutIdleFunc(Affichage);
 
@@ -102,17 +104,17 @@ void test(){
     Point p1 = creer_point(0, 0, 0); Point p2 = creer_point(10, 10, 0+LARGEUR_MUR);
     Point porte_p1 = creer_point(4, 0, 0); Point porte_p2 = creer_point(7, 8, 1);
     glColor3f(0.0, 0.0, 1.0);
-    Porte porte = creer_porte(porte_p1, porte_p2);
+    Porte porte = creer_porte(porte_p1, porte_p2, t);
 
-    creer_mur_porte(p1, p2, NON_TRAVERSABLE, porte);
+    creer_mur_porte(p1, p2, NON_TRAVERSABLE, porte, t);
 
     Point p3 = creer_point(-10, 0, -10); Point p4 = creer_point(-50, 15, -10 + LARGEUR_MUR);
     Point porte_p3 = creer_point(-15, 0, -10); Point porte_p4 = creer_point(-20, 9, -9);
     glColor3f(0.0, 0.0, 1.0);
 
-    Porte porte_2 = creer_porte(porte_p3, porte_p4);
+    Porte porte_2 = creer_porte(porte_p3, porte_p4, t);
 
-    creer_mur_porte(p3, p4, NON_TRAVERSABLE, porte_2);
+    creer_mur_porte(p3, p4, NON_TRAVERSABLE, porte_2, t);
 }
 
 void mouseMove(int x, int y){

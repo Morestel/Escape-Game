@@ -72,8 +72,14 @@ typedef struct {
     Hitbox hitbox;
 } Camera;
 
+typedef struct{
+    GLuint identifiant;
+}Texture;
+
+#include "Texture.h"
 #include "Map.h"
 #include "Personnage.h"
 #include "Camera.h"
+
 
 #endif
