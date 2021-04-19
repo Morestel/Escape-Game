@@ -53,7 +53,7 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     // Premiere face
     glTexCoord2d(0.0,1.0);
     glVertex3i(p1.x, p1.y, p1.z);
-    glTexCoord2d(0.0,0.0.0);
+    glTexCoord2d(0.0,0.0);
     glVertex3i(p2.x, p1.y, p1.z);
     glTexCoord2d(1.0,0.0);
     glVertex3i(p2.x, p2.y, p1.z);
