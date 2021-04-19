@@ -34,10 +34,10 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     //On la bind
     glBindTexture(GL_TEXTURE_2D, id_texture);
    gluBuild2DMipmaps(GL_TEXTURE_2D,     // texture to specify
-                     GL_RGBA,           // internal texture storage format
+                     GL_RGB,           // internal texture storage format
                      width,             // texture width
                      height,            // texture height
-                     GL_RGBA,           // pixel format
+                     GL_RGB,           // pixel format
                      GL_UNSIGNED_BYTE,	// color component format
                      data);    // pointer to texture image
    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -100,15 +100,15 @@ Mur creer_mur_porte(Point p1, Point p2, int traversable, Porte porte){
     m.p1 = p1; m.p2 = p2; m.traversable = traversable;
 
     Point premiere_partie = creer_point(porte.p1.x, p2.y, p2.z);
-    //glColor3f(1.0, 0.0, 0.0);
+    glColor3f(1.0, 0.0, 0.0);
     
     creer_mur(p1, premiere_partie, traversable);
     
     Point seconde_partie = creer_point(porte.p2.x, p1.y, p1.z);
-    //glColor3f(0.0,1.0,0.0);
+    glColor3f(0.0,1.0,0.0);
     creer_mur(seconde_partie, p2, traversable);
       
-    //glColor3f(0.8, 0.1, 0.2);
+    glColor3f(0.8, 0.1, 0.2);
     Point jointure_1 = creer_point(porte.p1.x, porte.p2.y, porte.p1.z);
     Point jointure_2 = creer_point(porte.p2.x, p2.y, p2.z);
     creer_mur(jointure_1, jointure_2, NON_TRAVERSABLE);
