@@ -44,7 +44,7 @@ Mur creer_mur(Point p1, Point p2, int traversable){
    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
    glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-   // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  width,  height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,  width,  height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
 //Pour la transparence
        glEnable(GL_BLEND);
@@ -103,15 +103,15 @@ Mur creer_mur_porte(Point p1, Point p2, int traversable, Porte porte){
     m.p1 = p1; m.p2 = p2; m.traversable = traversable;
 
     Point premiere_partie = creer_point(porte.p1.x, p2.y, p2.z);
-    glColor3f(1.0, 0.0, 0.0);
+    //glColor3f(1.0, 0.0, 0.0);
     
     creer_mur(p1, premiere_partie, traversable);
     
     Point seconde_partie = creer_point(porte.p2.x, p1.y, p1.z);
-    glColor3f(0.0,1.0,0.0);
+    //glColor3f(0.0,1.0,0.0);
     creer_mur(seconde_partie, p2, traversable);
       
-    glColor3f(0.8, 0.1, 0.2);
+    //glColor3f(0.8, 0.1, 0.2);
     Point jointure_1 = creer_point(porte.p1.x, porte.p2.y, porte.p1.z);
     Point jointure_2 = creer_point(porte.p2.x, p2.y, p2.z);
     creer_mur(jointure_1, jointure_2, NON_TRAVERSABLE);
