@@ -16,6 +16,7 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     m.p1 = p1;
     m.p2 = p2;
 
+    //la
     glEnable(GL_TEXTURE_2D);
 
     int width = 1000, height = 1000;
@@ -44,6 +45,8 @@ Mur creer_mur(Point p1, Point p2, int traversable){
    glTexParameterf (GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
                     GL_LINEAR_MIPMAP_LINEAR);
    glTexEnvf (GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+    
+    //a la ca soit dnas la trsututr
 
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, id_texture);
