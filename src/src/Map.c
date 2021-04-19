@@ -108,7 +108,7 @@ Mur creer_mur_porte(Point p1, Point p2, int traversable, Porte porte){
     creer_mur(p1, premiere_partie, traversable);
     
     Point seconde_partie = creer_point(porte.p2.x, p1.y, p1.z);
-    glColor3f(0.0,1.0,0.0);
+    glColor3f(1.0,1.0,1.0);
     creer_mur(seconde_partie, p2, traversable);
       
     glColor3f(0.8, 0.1, 0.2);
