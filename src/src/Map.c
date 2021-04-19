@@ -21,11 +21,11 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     int width = 1000, height = 1000;
     FILE * file;
     unsigned char * data;
-    file = fopen("mur.png", "rb" );
+    file = fopen("mur.bmp", "rb" );
     if ( file == NULL ) 
         return m;
-    data = (unsigned char *)malloc( width * height * 4 );
-    fread( data, width * height * 4, 1, file );
+    data = (unsigned char *)malloc( width * height * 3 );
+    fread( data, width * height *3 , 1, file );
     fclose( file );
     GLuint id_texture;
     //Genere la texture dans OpenGL
