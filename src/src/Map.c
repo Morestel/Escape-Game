@@ -62,7 +62,9 @@ glBindTexture(GL_TEXTURE_2D, id_texture);
     glVertex3i(p2.x, p2.y, p2.z);
     glTexCoord2d(0,0);
     glVertex3i(p1.x, p2.y, p2.z);
+    glTexCoord2d(1,0);
     glVertex3i(p1.x, p1.y, p2.z);
+    glTexCoord2d(1,1);
     glVertex3i(p2.x, p1.y, p2.z);
     
     // Premiere jointure
