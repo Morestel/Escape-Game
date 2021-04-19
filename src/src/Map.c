@@ -43,13 +43,18 @@ Mur creer_mur(Point p1, Point p2, int traversable){
     //glGenerateMipmap(GL_TEXTURE_2D);
 
 
+glBindTexture(GL_TEXTURE_2D, id_texture);
     glBegin(GL_QUADS);
     
 
     // Premiere face
+    glTexCoord2d(0,1);
     glVertex3i(p1.x, p1.y, p1.z);
+    glTexCoord2d(0,0);
     glVertex3i(p2.x, p1.y, p1.z);
+    glTexCoord2d(1,0);
     glVertex3i(p2.x, p2.y, p1.z);
+    glTexCoord2d(1,1);
     glVertex3i(p1.x, p2.y, p1.z);
     
     // Seconde face
