@@ -259,28 +259,32 @@ Porte porteInit(Point p1, Point p2){
 }
 
 void drawPorte(Porte p, Texture t){
+    glColor3f(1.0, 1.0, 1.0);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, t.identifiant);
     glBegin(GL_QUADS);
     
     // Première face
-    glTexCoord2f(-0.5,0.0);
+    glTexCoord2f(0.0,0.0);
     glVertex3f(p.p1.x, p.p1.y, p.p1.z);
-    glTexCoord2d(1.0,0.0);
+    glTexCoord2f(1.0,0.0);
     glVertex3f(p.p2.x, p.p1.y, p.p1.z);
-    glTexCoord2d(1.0,1.0);
+    glTexCoord2f(1.0,1.0);
     glVertex3f(p.p2.x, p.p2.y, p.p1.z);
-    glTexCoord2d(-1.0,1.0);
+    glTexCoord2f(0.0,1.0);
     glVertex3f(p.p1.x, p.p2.y, p.p1.z);
 
     // Seconde face
-    glTexCoord2d(0.0,0.0);
+    glTexCoord2f(0.0,0.0);
     glVertex3f(p.p1.x, p.p1.y, p.p2.z);
-    glTexCoord2d(1.0,0.0);
+
+    glTexCoord2f(1.0,0.0);
     glVertex3f(p.p2.x, p.p1.y, p.p2.z);
-    glTexCoord2d(1.0,1.0);
+
+    glTexCoord2f(1.0,1.0);
     glVertex3f(p.p2.x, p.p2.y, p.p2.z);
-    glTexCoord2d(0.0, 1.0);
+    
+    glTexCoord2f(0.0, 1.0);
     glVertex3f(p.p1.x, p.p2.y, p.p2.z);
 
     glEnd();

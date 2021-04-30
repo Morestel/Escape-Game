@@ -27,7 +27,7 @@ float pt = 0;
 
 void ChargerToutesTextures(){
     t = Charger_Texture("../Ressources/Textures/mur.bmp", 300, 300);
-    porte = Charger_Texture("../Ressources/Textures/porte.bmp", 287, 600); 
+    porte = Charger_Texture("../Ressources/Textures/door.bmp", 557, 1242); 
 }
 
 int main(int argc, char** argv){

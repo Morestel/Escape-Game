@@ -13,7 +13,7 @@
 #define HAUTEUR_ECRAN glutGet(GLUT_SCREEN_HEIGHT)
 #define CENTRE_X LARGEUR_ECRAN/2
 #define CENTRE_Y HAUTEUR_ECRAN/2
-#define MOUSE_SPEED 0.001
+#define MOUSE_SPEED 0.00001
 
 /* Camera */
 #define SPEED 0.02

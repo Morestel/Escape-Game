@@ -39,14 +39,13 @@ Texture Charger_Texture(char *adresse_image, int width, int height){
 Texture Charger_Texture(char *adresse_image, int width, int height){
 
     Texture t;
-    //glClearColor(.5,.5,.5,0);
     glEnable(GL_TEXTURE_2D);
     
     FILE * file;
     file = fopen(adresse_image, "rb");
     if (file == NULL) 
         exit(EXIT_FAILURE);
-    unsigned char *data = (unsigned char *)malloc(width * height * 3);
+    unsigned char *data = (unsigned char *)malloc(width * height *3);
     fread(data, width * height *3 , 1, file);
     fclose(file);
     GLuint id_texture;
@@ -70,7 +69,7 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
   */  
 
     t.identifiant = id_texture;
-
+    glDisable(GL_TEXTURE_2D);
     return t;
 }
 
