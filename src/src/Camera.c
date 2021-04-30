@@ -1,131 +1,49 @@
 #include "Camera.h"
 
 void cameraInit(Camera *c){
-    c->position.x = 0;
-    c->position.y = 5;
-    c->position.z = 5;
+    c->position = (vecteur){0, 6, 5};
+    c->direction = (vecteur){0, 0, -1};
+    c->velocite = VECTEUR_0;
 
-    c->direction.x = 0;
-    c->direction.y = 0;
-    c->direction.z = -1;
-
-    c->hitbox.p1.x = c->position.x - 1;
-    c->hitbox.p1.y = c->position.y - 5;
-    c->hitbox.p1.z = c->position.z - 1;
-
-    c->hitbox.p2.x = c->position.x + 1;
-    c->hitbox.p2.y = c->position.y + 1;
-    c->hitbox.p2.z = c->position.z + 1;
+    c->angleHorizontal = M_PI;
+    c->angleVertical = 0;
+    c->auSol = 0;
+    c->collision = 0;
 }
 
-void drawHitbox(Hitbox h){
-    glBegin(GL_LINES);
-
-    glColor3f(1, 1, 1);
-    glVertex3f(h.p1.x, h.p1.y, h.p1.z);
-    glVertex3f(h.p1.x, h.p1.y, h.p2.z);
-
-    glVertex3f(h.p1.x, h.p2.y, h.p1.z);
-    glVertex3f(h.p1.x, h.p2.y, h.p2.z);
-
-    glVertex3f(h.p1.x, h.p1.y, h.p1.z);
-    glVertex3f(h.p1.x, h.p2.y, h.p1.z);
-
-    glVertex3f(h.p1.x, h.p1.y, h.p2.z);
-    glVertex3f(h.p1.x, h.p2.y, h.p2.z);
-    //droite
-    glVertex3f(h.p2.x, h.p1.y, h.p1.z);
-    glVertex3f(h.p2.x, h.p1.y, h.p2.z);
-
-    glVertex3f(h.p2.x, h.p2.y, h.p1.z);
-    glVertex3f(h.p2.x, h.p2.y, h.p2.z);
-
-    glVertex3f(h.p2.x, h.p1.y, h.p1.z);
-    glVertex3f(h.p2.x, h.p2.y, h.p1.z);
-
-    glVertex3f(h.p2.x, h.p1.y, h.p2.z);
-    glVertex3f(h.p2.x, h.p2.y, h.p2.z);
-
-    //relie
-    glVertex3f(h.p1.x, h.p1.y, h.p1.z);
-    glVertex3f(h.p2.x, h.p1.y, h.p1.z);
-
-    glVertex3f(h.p1.x, h.p2.y, h.p1.z);
-    glVertex3f(h.p2.x, h.p2.y, h.p1.z);
-
-    glVertex3f(h.p1.x, h.p1.y, h.p2.z);
-    glVertex3f(h.p2.x, h.p1.y, h.p2.z);
-
-    glVertex3f(h.p1.x, h.p2.y, h.p2.z);
-    glVertex3f(h.p2.x, h.p2.y, h.p2.z);
-
-
-    glEnd();
+void rotationCamera(Camera *c){
+    c->direction = (vecteur){
+        sin(c->angleHorizontal) * cos(c->angleVertical),
+        sin(c->angleVertical),
+        cos(c->angleHorizontal) * cos(c->angleVertical)
+    };
 }
 
-void deplacerCameraHitbox(Camera *c){
-    c->hitbox.p1.x = c->position.x - 1;
-    c->hitbox.p1.y = c->position.y - 5;
-    c->hitbox.p1.z = c->position.z - 1;
+void deplacerCamera(Camera *c, int up, int down, int left, int right, int jump, float *pt){
+    vecteur avant, droite, haut;
+    vecteur deplacement = VECTEUR_0;
 
-    c->hitbox.p2.x = c->position.x + 1;
-    c->hitbox.p2.y = c->position.y + 1;
-    c->hitbox.p2.z = c->position.z + 1;
-}
+    //calcul des vecteurs de mouvements
+    avant = (vecteur){sin(c->angleHorizontal), 0, cos(c->angleHorizontal)};
+    droite = produitVectoriel(VECTEUR_Y, avant);
+    haut = produitVectoriel(avant, droite);
 
-void drawMur(Mur *m){
-    glBegin(GL_QUADS);
+    if(up)
+        deplacement = sommeVectorielle(deplacement, avant);
 
-    glColor3f(0.2, 0.2, 0.2);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
+    if(down)
+        deplacement = differenceVectorielle(deplacement, avant);
+
+    if(left)
+        deplacement = sommeVectorielle(deplacement, droite);
+
+    if(right)
+        deplacement = differenceVectorielle(deplacement, droite);
     
-    glColor3f(0.4, 0.4, 0.4);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
+    vecteurUnite(&deplacement);
 
+    if(jump && c->auSol)
+        deplacement = sommeVectorielle(deplacement, produitScalaire(haut, 3));
 
-    glColor3f(0.6, 0.6, 0.6);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-
-    glColor3f(0.8, 0.8, 0.8);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    
-    glColor3f(0.5, 0.5, 0.5);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-
-    glColor3f(0.7, 0.7, 0.7);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-
-    glEnd();
-}
-
-void murInit(Mur *m){
-    m->p1.x = -5;
-    m->p1.y = 0;
-    m->p1.z = -1;
-    m->p2.x = 5;
-    m->p2.y = 10;
-    m->p2.z = 1;
-}
-
-int collision(Hitbox h, Mur *m){
-    //regarder la feuille des collisions
-    return 1;
+    c->velocite = sommeVectorielle(deplacement, GRAVITE);
 }

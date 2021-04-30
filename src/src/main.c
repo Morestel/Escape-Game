@@ -1,12 +1,14 @@
 #include "Config.h"
 
-float horizontal = 3.14;
-float vertical=0;
-
-float mouseSpeed = 0.001;
+//touches zqsd
+int up = 0;
+int down = 0;
+int right = 0;
+int left = 0;
+int jump = 0;
 
 void Affichage();
-void test();
+void Update();
 
 //rotation camera
 void mouseMove(int x, int y);
@@ -16,30 +18,52 @@ void keyUp(unsigned char key, int x, int y);
 
 Camera c;
 Mur m;
-
+Porte p;
 Texture t;
+Texture porte;
+Mur sol;
+//temps precedent
+float pt = 0;
+
+void ChargerToutesTextures(){
+    t = Charger_Texture("../Ressources/Textures/mur.bmp", 300, 300);
+    porte = Charger_Texture("../Ressources/Textures/porte.bmp", 287, 600); 
+}
 
 int main(int argc, char** argv){
-
+    
+    //fenetre
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGBA | GLUT_SINGLE | GLUT_DEPTH);
     glutInitWindowSize(LARGEUR_ECRAN, HAUTEUR_ECRAN);
     glutInitWindowPosition(0,0);
     glutCreateWindow("Project Alcatraz");
-    glEnable(GL_DEPTH_TEST);
+    if(glutGameModeGet(GLUT_GAME_MODE_POSSIBLE))//fullscreen
+        glutEnterGameMode();
     glutSetCursor(GLUT_CURSOR_NONE);
-
+    glEnable(GL_DEPTH_TEST);
+    
+    //initialisations
     cameraInit(&c);
-    murInit(&m);
-    t = Charger_Texture("mur.bmp", 300, 300);
+    p = porteInit(creer_point(-10, 0, 0), creer_point(-5, 10, 0.15));
+    m = murInit(creer_point(-5, 0, -4), creer_point(5, 10, -3.75), NON_TRAVERSABLE);
+    sol = (Mur){(Point){-100, -2, -100}, (Point){100, 0, 100}};
+    
+    // Chargement des textures
+    ChargerToutesTextures();
+    
+    //affichage
     glutDisplayFunc(Affichage);
-    glutIdleFunc(Affichage);
+    glutIdleFunc(Update);
 
+    //gestion souris
     glutMotionFunc(mouseMove);
     glutPassiveMotionFunc(mouseMove);
+
+    //gestion clavier
     glutKeyboardFunc(keyDown);
     glutIgnoreKeyRepeat(GLUT_KEY_REPEAT_OFF);
-	glutKeyboardUpFunc(keyUp);
+    glutKeyboardUpFunc(keyUp);
     
     glutMainLoop();
 
@@ -51,116 +75,86 @@ void Affichage(){
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
 
-    glFrustum(-1, 1, -0.5625, 0.5625, 1, 300);
+    glFrustum(-0.5, 0.5, -0.28125, 0.28125, 0.8, 200);
     gluLookAt(c.position.x,
-                c.position.y, 
-                c.position.z,
-                c.position.x + c.direction.x,
-                c.position.y + c.direction.y,
-                c.position.z + c.direction.z,
-                0, 1, 0);
+              c.position.y, 
+              c.position.z,
+              c.position.x + c.direction.x,
+              c.position.y + c.direction.y,
+              c.position.z + c.direction.z,
+              0, 1, 0);
     
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-
-    test();
-    //drawMur(&m);
-    drawHitbox(c.hitbox);
     
 
+    drawHitbox(getCameraHitbox(c.position));
+    drawMur(&sol);
+    drawMur(&m);
+    drawPorte(p, porte);
+    //creer_immeuble(creer_point(0, 0, 0), t);
+    //test(&t);
+    
     glutSwapBuffers();
 }
 
-void test(){
-    glBegin(GL_QUADS);
-    //sol
-    glColor3f(0.3, 0.3, 0.3);
-    glVertex3f(-100, -1, -100);
-    glVertex3f(100, -1, -100);
-    glVertex3f(100, -1, 100);
-    glVertex3f(-100, -1, 100);
-    /*
-    //mur rouge
-    glColor3f(0.6, 0.3, 0.3);
-    glVertex3f(-5, -1, -10);
-    glVertex3f(5, -1, -10);
-    glVertex3f(5, 9, -10);
-    glVertex3f(-5, 9, -10);
-    //mur vert
-    glColor3f(0.3, 0.6, 0.3);
-    glVertex3f(-5, -1, 10);
-    glVertex3f(5, -1, 10);
-    glVertex3f(5, 9, 10);
-    glVertex3f(-5, 9, 10);
-    //mur bleu
-    glColor3f(0.3, 0.3, 0.6);
-    glVertex3f(-5, 10, -10);
-    glVertex3f(5, 10, -10);
-    glVertex3f(5, 10, 10);
-    glVertex3f(-5, 10, 10);*/
+void Update(){
 
-    glEnd();
-    Point p1 = creer_point(0, 0, 0); Point p2 = creer_point(10, 10, 0+LARGEUR_MUR);
-    Point porte_p1 = creer_point(4, 0, 0); Point porte_p2 = creer_point(7, 8, 1);
-    glColor3f(0.0, 0.0, 1.0);
-    Porte porte = creer_porte(porte_p1, porte_p2, t);
+    deplacerCamera(&c, up, down, left, right, jump, &pt);
 
-    creer_mur_porte(p1, p2, NON_TRAVERSABLE, porte, t);
+    collision(c.position, &c.velocite, getHitbox(sol));
+    collision(c.position, &c.velocite, getHitbox(m));
 
-    Point p3 = creer_point(-10, 0, -10); Point p4 = creer_point(-50, 15, -10 + LARGEUR_MUR);
-    Point porte_p3 = creer_point(-15, 0, -10); Point porte_p4 = creer_point(-20, 9, -9);
-    glColor3f(0.0, 0.0, 1.0);
+    c.position = sommeVectorielle(c.position, produitScalaire(c.velocite, SPEED));
 
-    Porte porte_2 = creer_porte(porte_p3, porte_p4, t);
-
-    creer_mur_porte(p3, p4, NON_TRAVERSABLE, porte_2, t);
+    glutPostRedisplay();
 }
 
 void mouseMove(int x, int y){
-    float dx, dy;
 
     if(x != CENTRE_X || y != CENTRE_Y){
-        dx = CENTRE_X - x;
-        dy = CENTRE_Y - y;
+        float dx = CENTRE_X - x;
+        float dy = CENTRE_Y - y;
 
-        horizontal += dx * mouseSpeed;
-        vertical += dy * mouseSpeed;
+        c.angleHorizontal += dx * MOUSE_SPEED;
+        c.angleVertical += dy * MOUSE_SPEED;
 
-        if(vertical < -M_PI_2 + 0.01)
-            vertical = -M_PI_2 + 0.01;
-        if(vertical > M_PI_2 - 0.01 )
-            vertical = M_PI_2 - 0.01;
-
-        c.direction.x = sin(horizontal) * cos(vertical);
-        c.direction.y = sin(vertical);
-        c.direction.z = cos(horizontal) * cos(vertical);
+        if(c.angleVertical < -M_PI_2 + 0.01)
+            c.angleVertical = -M_PI_2 + 0.01;
+        if(c.angleVertical > M_PI_2 - 0.01 )
+            c.angleVertical = M_PI_2 - 0.01;
     
         glutWarpPointer(CENTRE_X, CENTRE_Y);
     }
-    
+
+    rotationCamera(&c);
+
+    glutPostRedisplay();
 }
 
 void keyDown(unsigned char key, int x, int y){
     //test collision (if(collision(c.hitbox, &m)))
     switch (key){
+    case 'Z':
     case 'z':
-            c.position.x += c.direction.x * 2;
-            c.position.z += c.direction.z * 2;
+            up = 1;
         break;
+    case 'S':
     case 's':
-            c.position.x -= c.direction.x * 2;
-            c.position.z -= c.direction.z * 2;
+            down = 1;
         break;
+    case 'Q':
     case 'q':
-            c.position.x -= -c.direction.z * 2;
-            c.position.z -= c.direction.x * 2;
+            left = 1;
         break;
+    case 'D':
     case 'd':
-            c.position.x += -c.direction.z * 2;
-            c.position.z += c.direction.x * 2;
+            right = 1;
         break;
-
+    case ' ':
+            jump = 1;
+        break;
     case 'p':
             exit(0);
         break;
@@ -168,24 +162,32 @@ void keyDown(unsigned char key, int x, int y){
     default:
         break;
     }
-    deplacerCameraHitbox(&c);
+
+    glutPostRedisplay();
 }
 
-void keyUp(unsigned char key, int x , int y){
+void keyUp(unsigned char key, int x, int y){
+
     switch (key){
+    case 'Z':
     case 'z':
-        
+        up = 0;
         break;
+    case 'S':
     case 's':
-        
+        down = 0;
         break;
+    case 'Q':
     case 'q':
-        
+        left = 0;
         break;
+    case 'D':
     case 'd':
-        
+        right = 0;
         break;
-    
+    case ' ':
+        jump = 0;
+        break; 
     default:
         break;
     }
