@@ -38,17 +38,14 @@ Texture Charger_Texture(char *adresse_image, int width, int height){
 
 Texture Charger_Texture(char *adresse_image, int width, int height){
 
-    
-      GLuint texture;
-      int width, height;
+        Texture t;
+        glEnable(GL_TEXTURE_2D);
+
       unsigned char * data;
 
       FILE * file;
-      file = fopen( filename, "rb" );
+      file = fopen( adresse_image, "rb" );
 
-      if ( file == NULL ) return 0;
-      width = 1024;
-      height = 512;
       data = (unsigned char *)malloc( width * height * 3 );
       //int size = fseek(file,);
       fread( data, width * height * 3, 1, file );
@@ -65,8 +62,8 @@ Texture Charger_Texture(char *adresse_image, int width, int height){
         data[index+2] = B;
       }
 
-      glGenTextures( 1, &texture );
-      glBindTexture( GL_TEXTURE_2D, texture );
+      glGenTextures( 1, &t.identifiant );
+      glBindTexture( GL_TEXTURE_2D, t.identifiant );
       glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
       glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR_MIPMAP_NEAREST );
 
@@ -76,9 +73,9 @@ Texture Charger_Texture(char *adresse_image, int width, int height){
       gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height,GL_RGB, GL_UNSIGNED_BYTE, data );
       free( data );
 
-      return texture;
-    Texture t;
-    glEnable(GL_TEXTURE_2D);
+      return t;
+
+/*
     
     FILE * file;
     file = fopen(adresse_image, "rb");
@@ -101,14 +98,14 @@ Texture Charger_Texture(char *adresse_image, int width, int height){
                      GL_RGB,           
                      GL_UNSIGNED_BYTE,	
                      data); 
-/*
+
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
     //glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-  */  
 
     t.identifiant = id_texture;
     glDisable(GL_TEXTURE_2D);
     return t;
+    */
 }
 
