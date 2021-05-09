@@ -541,9 +541,9 @@ void maisonInit(Maison *maison){
             NON_TRAVERSABLE
             , SANS_PORTE);
     }
-
+/*
     // Mur intérieur droit
-    for (i = 0, decalage2 = 0; i < NOMBRE_MURS; i++, decalage2 += taille_mur){
+    for (i = 0, decalage2 = 0; i < NOMBRE_MURS-1; i++, decalage2 += taille_mur){
         for (j = 0, decalage = 0; j < NOMBRE_MURS; j++, decalage += taille_mur){
             for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
                 maison->piece[i][j][k].liste_mur[DROITE] = murInit(creer_point(depart.x + taille_mur - (LARGEUR_MUR/2) + decalage2, depart.y+hauteur, depart.z + decalage)
@@ -563,19 +563,50 @@ void maisonInit(Maison *maison){
             }
         }
     }
+*/
+    for (i = 0, decalage2 = 0; i < NOMBRE_MURS-1; i++, decalage2 += taille_mur){
+            for (j = 0, decalage = 0; j < NOMBRE_MURS; j++, decalage += taille_mur){
+                for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
+                    maison->piece[i][j][k].liste_mur[DROITE] = murInit(creer_point(depart.x + taille_mur - (LARGEUR_MUR/2) + decalage2, depart.y+hauteur, depart.z + decalage)
+                                                                  , creer_point(depart.x + taille_mur + (LARGEUR_MUR/2) + decalage2, depart.y+hauteur+HAUTEUR_MUR, depart.z + decalage + taille_mur)
+                                                                  , NON_TRAVERSABLE
+                                                                  , AVEC_PORTE);
+                    if (decalage != 0)
+                        maison->piece[i][j][k].liste_mur[DROITE].porte = porteInit(creer_point(depart.x + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2, depart.y+hauteur, depart.z + decalage)
+                                                                                , creer_point(depart.x + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2, depart.y+hauteur+HAUTEUR_PORTE, depart.z + decalage + LARGEUR_PORTE));
+                }
+            }
+    }
 
+    for (i = 0, decalage2 = 0; i < NOMBRE_MURS; i++, decalage2 += taille_mur){
+        for (j = 0, decalage = 0; j < NOMBRE_MURS-1; j++, decalage += taille_mur){
+            for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
+                maison->piece[i][j][k].liste_mur[DERRIERE] = murInit(creer_point(depart.x + decalage, depart.y+hauteur, depart.z + taille_mur - (LARGEUR_MUR/2)+decalage2)
+                                                                    , creer_point(depart.x + decalage + taille_mur, depart.y +hauteur + HAUTEUR_MUR, depart.z + taille_mur + (LARGEUR_MUR/2)+decalage2)
+                                                                    , NON_TRAVERSABLE
+                                                                    , AVEC_PORTE);
+                if (decalage != 0){
+                    maison->piece[i][j][k].liste_mur[DERRIERE].porte = porteInit(creer_point(depart.x + decalage, depart.y+hauteur, depart.z  + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2)
+                                                                        , creer_point(depart.x + decalage + LARGEUR_PORTE, depart.y+hauteur+HAUTEUR_PORTE, depart.z + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2));
+                }
+            }
+        }
+    }
 } 
 
 void drawMaison(Maison maison, Texture t, Texture p){
     int i, j, k;
 
    // Mur devant
+   
    for (i = 0; i < NOMBRE_MURS; i++){
        for (k = 0; k < NOMBRE_ETAGE; k++)
         drawMur(maison.piece[i][0][k].liste_mur[DEVANT]);
     }
+    
         
     // Mur du fond
+    
    for (i = 0; i < NOMBRE_MURS; i++){
        for (k = 0; k < NOMBRE_ETAGE; k++)
        drawMur(maison.piece[i][NOMBRE_MURS-1][k].liste_mur[DERRIERE]);
@@ -588,6 +619,7 @@ void drawMaison(Maison maison, Texture t, Texture p){
    }
     
    // Mur droit
+ 
    for (j = 0; j < NOMBRE_MURS; j++){
        for (k = 0; k < NOMBRE_ETAGE; k++)
        drawMur(maison.piece[NOMBRE_MURS-1][j][k].liste_mur[DROITE]);
@@ -598,6 +630,20 @@ void drawMaison(Maison maison, Texture t, Texture p){
         drawMur(maison.sol[k]);
 
     // Murs intérieurs
+    /*
+    for (i = 0; i < NOMBRE_MURS; i++){
+        for (j = 0; j < NOMBRE_MURS; j++){
+            for (k = 0; k < NOMBRE_ETAGE; k++){
+                drawMur(maison.piece[i][j][k].liste_mur[DROITE]);
+                drawMur(maison.piece[i][j][k].liste_mur[DERRIERE]);
+                if (maison.piece[i][j][k].liste_mur[DROITE].avec_porte == AVEC_PORTE)
+                    drawPorte(maison.piece[i][j][k].liste_mur[DROITE].porte, p);
+                if (maison.piece[i][j][k].liste_mur[DERRIERE].avec_porte == AVEC_PORTE)
+                    drawPorte(maison.piece[i][j][k].liste_mur[DERRIERE].porte, p);
+            }
+        }
+    }*/
+
     for (i = 0; i < NOMBRE_MURS; i++){
         for (j = 0; j < NOMBRE_MURS; j++){
             for (k = 0; k < NOMBRE_ETAGE; k++){
@@ -610,6 +656,9 @@ void drawMaison(Maison maison, Texture t, Texture p){
             }
         }
     }
+
+
+
 
     
 }   
