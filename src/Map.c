@@ -140,41 +140,6 @@ Piece creer_piece(Mur m1, Mur m2, Mur m3, Mur m4, Porte p1) {
     return piece;
 }
 
-
-void creer_immeuble(Point depart, Texture t){
-
-    float taille_mur = (float)TAILLE_IMMEUBLE / NOMBRE_MURS;
-    float decalage = 0;
-
-    // Premier mur
-    for (int i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
-        Point p1 = creer_point(depart.x + decalage, depart.y, depart.z);
-        Point p2 = creer_point(depart.x + decalage + taille_mur, depart.y + 20, depart.z + LARGEUR_MUR);
-        creer_mur(p1, p2, NON_TRAVERSABLE, t);
-    }
-
-    // Second mur
-    for (int i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
-            Point p1 = creer_point(depart.x + decalage, depart.y, depart.z + TAILLE_IMMEUBLE);
-            Point p2 = creer_point(depart.x + decalage + taille_mur, depart.y + 20, depart.z + TAILLE_IMMEUBLE + LARGEUR_MUR);
-            creer_mur(p1, p2, NON_TRAVERSABLE, t);
-    }
-
-    // Troisième mur
-    for (int i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
-        Point p1 = creer_point(depart.x - LARGEUR_MUR, depart.y, depart.z + decalage);
-        Point p2 = creer_point(depart.x, depart.y + 20, depart.z + decalage + taille_mur);
-        creer_mur(p1, p2, NON_TRAVERSABLE, t);
-    }
-
-    // Quatrième mur
-    for (int i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
-        Point p1 = creer_point(depart.x + TAILLE_IMMEUBLE - LARGEUR_MUR, depart.y, depart.z + decalage);
-        Point p2 = creer_point(depart.x + TAILLE_IMMEUBLE, depart.y + 20, depart.z + decalage + taille_mur);
-        creer_mur(p1, p2, NON_TRAVERSABLE, t);
-    }
-}
-
 void test(Texture *t){
 
 
@@ -196,58 +161,222 @@ void test(Texture *t){
 
 
 
-
-//tests
-void drawMur(Mur *m){
-    glBegin(GL_QUADS);
-
-    //gauche
-    glColor3f(0.2, 0.2, 0.2);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
-    //fond
-    glColor3f(0.4, 0.4, 0.4);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
-    //droite
-    glColor3f(0.6, 0.6, 0.6);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-    //devant
-    glColor3f(0.8, 0.8, 0.8);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    //bas
-    glColor3f(0.5, 0.5, 0.5);
-    glVertex3f(m->p1.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p1.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p1.y, m->p2.z);
-    //haut
-    glColor3f(0.7, 0.7, 0.7);
-    glVertex3f(m->p1.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p1.z);
-    glVertex3f(m->p2.x, m->p2.y, m->p2.z);
-    glVertex3f(m->p1.x, m->p2.y, m->p2.z);
-
-    glEnd();
-}
-
-Mur murInit(Point p1, Point p2, int traversable){
+Mur murInit(Point p1, Point p2, int traversable, int avec_porte){
     Mur m;
     m.traversable = NON_TRAVERSABLE;
     m.p1 = p1;
     m.p2 = p2;
-
+    m.avec_porte = avec_porte;
     return m;
+}
+
+void drawMur(Mur m){
+    if (m.avec_porte == SANS_PORTE){
+
+        glBegin(GL_QUADS);
+
+        //gauche
+        
+        glColor3f(0.2, 0.2, 0.2);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        //fond
+        glColor3f(0.4, 0.4, 0.4);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        //droite
+        glColor3f(0.6, 0.6, 0.6);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        //devant
+        glColor3f(0.8, 0.8, 0.8);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+        //bas
+        glColor3f(0.5, 0.5, 0.5);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        //haut
+        glColor3f(0.7, 0.7, 0.7);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+
+        glEnd();
+    }
+    else{
+        float mid_mur =  (float)(TAILLE_IMMEUBLE / NOMBRE_MURS) / 2;
+        
+        if ((m.p1.x - m.p2.x) * (m.p1.x - m.p2.x) >= (m.p1.z-m.p2.z)*(m.p1.z-m.p2.z)){
+
+        
+        glBegin(GL_QUADS);
+
+        // Devant
+        glColor3f(0.8, 0.8, 0.8);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p2.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p2.y, m.p1.z);
+
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y + HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y + HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p2.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p2.y, m.p1.z);
+
+        // Fond
+        glColor3f(0.4, 0.4, 0.4);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p2.y, m.p2.z);
+
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y + HAUTEUR_PORTE, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y + HAUTEUR_PORTE, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p2.y, m.p2.z);
+
+        // Latéral gauche
+        glColor3f(0.2, 0.2, 0.2);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+
+        // Latéral droit
+        glColor3f(0.6, 0.6, 0.6);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+
+        // Haut
+        glColor3f(0.7, 0.7, 0.7);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+
+        // Intérieur
+        glColor3f(0.3, 0.3, 0.3);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2) , m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2) , m.p1.y+HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2) , m.p1.y+HAUTEUR_PORTE, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2) , m.p1.y, m.p2.z);
+
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2) , m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2) , m.p1.y+HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2) , m.p1.y+HAUTEUR_PORTE, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2) , m.p1.y, m.p2.z);
+
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y+HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y+HAUTEUR_PORTE, m.p1.z);
+        glVertex3f(m.p1.x + mid_mur + (LONGUEUR_PORTE/2), m.p1.y+HAUTEUR_PORTE, m.p2.z);
+        glVertex3f(m.p1.x + mid_mur - (LONGUEUR_PORTE/2), m.p1.y+HAUTEUR_PORTE, m.p2.z);
+
+
+        glEnd();
+        }
+        else{
+             glBegin(GL_QUADS);
+
+        // Devant
+        glColor3f(0.8, 0.8, 0.8);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z + mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z + mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+
+        glVertex3f(m.p1.x , m.p1.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x , m.p2.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+
+        glVertex3f(m.p1.x , m.p1.y + HAUTEUR_PORTE, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x , m.p1.y + HAUTEUR_PORTE, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x , m.p2.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x , m.p2.y, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+
+        // Fond
+        glColor3f(0.4, 0.4, 0.4);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p2.x , m.p1.y, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z + mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z + mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x , m.p2.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+
+        glVertex3f(m.p2.x , m.p1.y + HAUTEUR_PORTE, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x , m.p1.y + HAUTEUR_PORTE, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x , m.p2.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x , m.p2.y, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+
+        // Latéral gauche
+        glColor3f(0.2, 0.2, 0.2);
+        glVertex3f(m.p1.x, m.p1.y, m.p1.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z);
+
+        // Latéral droit
+        glColor3f(0.6, 0.6, 0.6);
+        glVertex3f(m.p1.x, m.p1.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p2.x, m.p1.y, m.p2.z);
+
+        // Haut
+        glColor3f(0.7, 0.7, 0.7);
+        glVertex3f(m.p1.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p1.z);
+        glVertex3f(m.p2.x, m.p2.y, m.p2.z);
+        glVertex3f(m.p1.x, m.p2.y, m.p2.z);
+
+        // Intérieur
+        glColor3f(0.3, 0.3, 0.3);
+        glVertex3f(m.p1.x , m.p1.y, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2) );
+        glVertex3f(m.p1.x  , m.p1.y+HAUTEUR_PORTE, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x  , m.p1.y+HAUTEUR_PORTE, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x  , m.p1.y, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+
+        glVertex3f(m.p1.x , m.p1.y, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2) );
+        glVertex3f(m.p1.x  , m.p1.y+HAUTEUR_PORTE, m.p1.z+ mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p1.y+HAUTEUR_PORTE, m.p1.z + mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p1.y, m.p1.z + mid_mur + (LONGUEUR_PORTE/2) );
+
+        glVertex3f(m.p1.x , m.p1.y+HAUTEUR_PORTE, m.p1.z+ mid_mur - (LONGUEUR_PORTE/2));
+        glVertex3f(m.p1.x, m.p1.y+HAUTEUR_PORTE, m.p1.z + mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p1.y+HAUTEUR_PORTE, m.p1.z + mid_mur + (LONGUEUR_PORTE/2));
+        glVertex3f(m.p2.x, m.p1.y+HAUTEUR_PORTE, m.p1.z + mid_mur - (LONGUEUR_PORTE/2));
+
+
+        glEnd();
+        }
+    }
 }
 
 Porte porteInit(Point p1, Point p2){
@@ -260,55 +389,222 @@ Porte porteInit(Point p1, Point p2){
 
 void drawPorte(Porte p, Texture t){
     glColor3f(1.0, 1.0, 1.0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, t.identifiant);
-    glBegin(GL_QUADS);
     
-    // Première face
-    glTexCoord2f(0.0,0.0);
-    glVertex3f(p.p1.x, p.p1.y, p.p1.z);
-    glTexCoord2f(1.0,0.0);
-    glVertex3f(p.p2.x, p.p1.y, p.p1.z);
-    glTexCoord2f(1.0,1.0);
-    glVertex3f(p.p2.x, p.p2.y, p.p1.z);
-    glTexCoord2f(0.0,1.0);
-    glVertex3f(p.p1.x, p.p2.y, p.p1.z);
+    if ((p.p1.x - p.p2.x) * (p.p1.x - p.p2.x) >= (p.p1.z-p.p2.z)*(p.p2.z-p.p2.z)){
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, t.identifiant);
+        glBegin(GL_QUADS);
+        
+        // Première face
+        glTexCoord2f(0.0,0.0);
+        glVertex3f(p.p1.x, p.p1.y, p.p1.z);
+        glTexCoord2f(1.0,0.0);
+        glVertex3f(p.p2.x, p.p1.y, p.p1.z);
+        glTexCoord2f(1.0,1.0);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
+        glTexCoord2f(0.0,1.0);
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
 
-    // Seconde face
-    glTexCoord2f(0.0,0.0);
-    glVertex3f(p.p1.x, p.p1.y, p.p2.z);
+        // Seconde face
+        glTexCoord2f(0.0,0.0);
+        glVertex3f(p.p1.x, p.p1.y, p.p2.z);
+        glTexCoord2f(1.0,0.0);
+        glVertex3f(p.p2.x, p.p1.y, p.p2.z);
+        glTexCoord2f(1.0,1.0);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glTexCoord2f(0.0, 1.0);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
 
-    glTexCoord2f(1.0,0.0);
-    glVertex3f(p.p2.x, p.p1.y, p.p2.z);
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
 
-    glTexCoord2f(1.0,1.0);
-    glVertex3f(p.p2.x, p.p2.y, p.p2.z);
-    
-    glTexCoord2f(0.0, 1.0);
-    glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        glBegin(GL_QUADS);
+        // Jointures latérales
+        
+        glVertex3f(p.p2.x, p.p1.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p1.y, p.p2.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
 
-    glEnd();
-    glDisable(GL_TEXTURE_2D);
+        glVertex3f(p.p1.x, p.p1.y, p.p1.z);
+        glVertex3f(p.p1.x, p.p1.y, p.p2.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
 
-    glBegin(GL_QUADS);
-     // Jointures latérales
-    //glColor3f(0.2, 0.2, 0.8);
-    glVertex3f(p.p2.x, p.p1.y, p.p1.z);
-    glVertex3f(p.p2.x, p.p1.y, p.p2.z);
-    glVertex3f(p.p2.x, p.p2.y, p.p2.z);
-    glVertex3f(p.p2.x, p.p2.y, p.p1.z);
+        // Jointure du haut
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        glEnd();
+    }
+    else{
+        glEnable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, t.identifiant);
+        glBegin(GL_QUADS);
 
-    glVertex3f(p.p1.x, p.p1.y, p.p1.z);
-    glVertex3f(p.p1.x, p.p1.y, p.p2.z);
-    glVertex3f(p.p1.x, p.p2.y, p.p2.z);
-    glVertex3f(p.p1.x, p.p2.y, p.p1.z);
+        glTexCoord2f(0.0,0.0);
+        glVertex3f(p.p2.x, p.p1.y, p.p1.z);
+        glTexCoord2f(1.0,0.0);
+        glVertex3f(p.p2.x, p.p1.y, p.p2.z);
+        glTexCoord2f(1.0,1.0);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glTexCoord2f(0.0,1.0);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
 
-    // Jointure du haut
-    glVertex3f(p.p1.x, p.p2.y, p.p1.z);
-    glVertex3f(p.p2.x, p.p2.y, p.p1.z);
-    glVertex3f(p.p2.x, p.p2.y, p.p2.z);
-    glVertex3f(p.p1.x, p.p2.y, p.p2.z);
-    glEnd();
+        glTexCoord2f(0.0,0.0);
+        glVertex3f(p.p1.x, p.p1.y, p.p1.z);
+        glTexCoord2f(1.0,0.0);
+        glVertex3f(p.p1.x, p.p1.y, p.p2.z);
+        glTexCoord2f(1.0,1.0);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        glTexCoord2f(0.0,1.0);
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
 
+
+        glEnd();
+        glDisable(GL_TEXTURE_2D);
+
+        glBegin(GL_QUADS);
+
+        // Première face
+        
+        glVertex3f(p.p1.x, p.p1.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p1.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
+
+        // Seconde face
+        glVertex3f(p.p1.x, p.p1.y, p.p2.z);
+        glVertex3f(p.p2.x, p.p1.y, p.p2.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        // Jointure du haut
+        glVertex3f(p.p1.x, p.p2.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p1.z);
+        glVertex3f(p.p2.x, p.p2.y, p.p2.z);
+        glVertex3f(p.p1.x, p.p2.y, p.p2.z);
+        glEnd();
+    }
 }
 
+void maisonInit(Maison *maison){
+    float taille_mur = (float)TAILLE_IMMEUBLE / NOMBRE_MURS;
+    float decalage = 0;
+    float decalage2 = 0;
+    float hauteur = 0;
+    Point depart = creer_point(0, 0, 0);
+
+    int i, j, k;
+    
+    // Mur devant
+    for (i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
+        for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL)
+            maison->piece[i][0][k].liste_mur[DEVANT] = murInit(creer_point(depart.x + decalage, depart.y + hauteur, depart.z)
+                                                 , creer_point(depart.x + decalage + taille_mur, depart.y + hauteur + HAUTEUR_MUR, depart.z + LARGEUR_MUR)
+                                                 , NON_TRAVERSABLE
+                                                 , SANS_PORTE);    
+                                                                  
+    }
+    // Mur derrière   
+    for (i = 0, decalage = 0; i < NOMBRE_MURS; i++, decalage += taille_mur){
+        for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL)
+            maison->piece[i][NOMBRE_MURS-1][k].liste_mur[DERRIERE] = murInit(creer_point(depart.x + decalage, depart.y + hauteur, depart.z + TAILLE_IMMEUBLE)
+                                                , creer_point(depart.x + decalage + taille_mur, depart.y + hauteur + HAUTEUR_MUR, depart.z - LARGEUR_MUR + TAILLE_IMMEUBLE)
+                                                , NON_TRAVERSABLE
+                                                , SANS_PORTE);
+    }
+
+    // Mur gauche
+    for (j = 0, decalage = 0; j < NOMBRE_MURS; j++, decalage += taille_mur){
+        for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL)
+        maison->piece[0][j][k].liste_mur[GAUCHE] = murInit(creer_point(depart.x - LARGEUR_MUR, depart.y + hauteur, depart.z + decalage)
+                                             , creer_point(depart.x, depart.y + hauteur + HAUTEUR_MUR, depart.z + decalage + taille_mur)
+                                             , NON_TRAVERSABLE
+                                             , SANS_PORTE);      
+    }
+
+    // Mur droit
+    for (j = 0, decalage = 0; j < NOMBRE_MURS; j++, decalage += taille_mur)
+        for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
+            maison->piece[NOMBRE_MURS-1][j][k].liste_mur[DROITE] = murInit(creer_point(depart.x + LARGEUR_MUR + TAILLE_IMMEUBLE, depart.y + hauteur, depart.z + decalage)
+                                                 , creer_point(depart.x + TAILLE_IMMEUBLE, depart.y + hauteur + HAUTEUR_MUR, depart.z + decalage + taille_mur)
+                                                 , NON_TRAVERSABLE
+                                                 , SANS_PORTE);
+    }
+    // Plafond
+    for (k = 0, hauteur = HAUTEUR_MUR+HAUTEUR_SOL; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
+    maison->sol[k] = murInit(creer_point(0, HAUTEUR_MUR, 0),
+            creer_point(TAILLE_IMMEUBLE, hauteur, TAILLE_IMMEUBLE),
+            NON_TRAVERSABLE
+            , SANS_PORTE);
+    }
+
+    // Mur intérieur droit
+    for (i = 0, decalage2 = 0; i < NOMBRE_MURS; i++, decalage2 += taille_mur){
+        for (j = 0, decalage = 0; j < NOMBRE_MURS; j++, decalage += taille_mur){
+            for (k = 0, hauteur = 0; k < NOMBRE_ETAGE; k++, hauteur += HAUTEUR_MUR+HAUTEUR_SOL){
+                maison->piece[i][j][k].liste_mur[DROITE] = murInit(creer_point(depart.x + taille_mur - (LARGEUR_MUR/2) + decalage2, depart.y+hauteur, depart.z + decalage)
+                                                                  , creer_point(depart.x + taille_mur + (LARGEUR_MUR/2) + decalage2, depart.y+hauteur+HAUTEUR_MUR, depart.z + decalage + taille_mur)
+                                                                  , NON_TRAVERSABLE
+                                                                  , AVEC_PORTE);
+                maison->piece[i][j][k].liste_mur[DERRIERE] = murInit(creer_point(depart.x + decalage, depart.y+hauteur, depart.z + taille_mur - (LARGEUR_MUR/2)+decalage2)
+                                                                    , creer_point(depart.x + decalage + taille_mur, depart.y +hauteur + HAUTEUR_MUR, depart.z + taille_mur + (LARGEUR_MUR/2)+decalage2)
+                                                                    , NON_TRAVERSABLE
+                                                                    , AVEC_PORTE);
+                // Création des portes
+                maison->piece[i][j][k].liste_mur[DROITE].porte = porteInit(creer_point(depart.x + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2, depart.y+hauteur, depart.z + decalage)
+                                                                        , creer_point(depart.x + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2, depart.y+hauteur+HAUTEUR_PORTE, depart.z + decalage + LARGEUR_PORTE));
+                maison->piece[i][j][k].liste_mur[DERRIERE].porte = porteInit(creer_point(depart.x + decalage, depart.y+hauteur, depart.z  + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2)
+                                                                        , creer_point(depart.x + decalage + LARGEUR_PORTE, depart.y+hauteur+HAUTEUR_PORTE, depart.z + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2));
+            }
+        }
+    }
+
+} 
+
+void drawMaison(Maison maison, Texture t, Texture p){
+    int i, j, k;
+
+   // Mur devant
+   for (i = 0; i < NOMBRE_MURS; i++){
+       for (k = 0; k < NOMBRE_ETAGE; k++)
+        drawMur(maison.piece[i][0][k].liste_mur[DEVANT]);
+    }
+        
+    // Mur du fond
+   for (i = 0; i < NOMBRE_MURS; i++){
+       for (k = 0; k < NOMBRE_ETAGE; k++)
+       drawMur(maison.piece[i][NOMBRE_MURS-1][k].liste_mur[DERRIERE]);
+   }
+
+    // Mur gauche
+    for (j= 0; j < NOMBRE_MURS; j++){
+        for (k = 0; k < NOMBRE_ETAGE; k++)
+       drawMur(maison.piece[0][j][k].liste_mur[GAUCHE]);
+   }
+    
+   // Mur droit
+   for (j = 0; j < NOMBRE_MURS; j++){
+       for (k = 0; k < NOMBRE_ETAGE; k++)
+       drawMur(maison.piece[NOMBRE_MURS-1][j][k].liste_mur[DROITE]);
+   }
+
+   // Plafond
+   for (k = 0; k < NOMBRE_ETAGE; k++)
+        drawMur(maison.sol[k]);
+
+    // Murs intérieurs
+    for (i = 0; i < NOMBRE_MURS; i++){
+        for (j = 0; j < NOMBRE_MURS; j++){
+            for (k = 0; k < NOMBRE_ETAGE; k++){
+                drawMur(maison.piece[i][j][k].liste_mur[DROITE]);
+                drawMur(maison.piece[i][j][k].liste_mur[DERRIERE]);
+                if (maison.piece[i][j][k].liste_mur[DROITE].avec_porte == AVEC_PORTE)
+                    drawPorte(maison.piece[i][j][k].liste_mur[DROITE].porte, p);
+                if (maison.piece[i][j][k].liste_mur[DERRIERE].avec_porte == AVEC_PORTE)
+                    drawPorte(maison.piece[i][j][k].liste_mur[DERRIERE].porte, p);
+            }
+        }
+    }
+}   

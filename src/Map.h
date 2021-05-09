@@ -14,9 +14,11 @@ void creer_immeuble(Point depart, Texture t);
 
 
 void test(Texture *t);
-Mur murInit(Point p1, Point p2, int traversable); //plus tard mettre 2 points en paramètre
-void drawMur(Mur *m);
+Mur murInit(Point p1, Point p2, int traversable, int avec_porte); //plus tard mettre 2 points en paramètre
+void drawMur(Mur m);
 Porte porteInit(Point p1, Point p2);
 void drawPorte(Porte p, Texture t);
+void maisonInit(Maison *maison);
+void drawMaison(Maison maison, Texture t, Texture p);
 
 #endif

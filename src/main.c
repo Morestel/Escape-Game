@@ -22,6 +22,8 @@ Porte p;
 Texture t;
 Texture porte;
 Mur sol;
+Maison maison;
+
 //temps precedent
 float pt = 0;
 
@@ -45,10 +47,10 @@ int main(int argc, char** argv){
     
     //initialisations
     cameraInit(&c);
-    p = porteInit(creer_point(-10, 0, 0), creer_point(-5, 10, 0.15));
-    m = murInit(creer_point(-5, 0, -4), creer_point(5, 10, -3.75), NON_TRAVERSABLE);
+    p = porteInit(creer_point(5, 0, 0), creer_point(10, 10, 0.15));
+    m = murInit(creer_point(-5, 0, -4), creer_point(5, 10, -3.75), NON_TRAVERSABLE, SANS_PORTE);
     sol = (Mur){(Point){-100, -2, -100}, (Point){100, 0, 100}};
-    
+    maisonInit(&maison);
     // Chargement des textures
     ChargerToutesTextures();
     
@@ -90,12 +92,14 @@ void Affichage(){
     
 
     drawHitbox(getCameraHitbox(c.position));
-    drawMur(&sol);
-    drawMur(&m);
+    drawMur(sol);
+    drawMur(m);
     drawPorte(p, porte);
     //creer_immeuble(creer_point(0, 0, 0), t);
     //test(&t);
-    
+                   
+
+    drawMaison(maison, t, porte);    
     glutSwapBuffers();
 }
 
