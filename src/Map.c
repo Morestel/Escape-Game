@@ -390,7 +390,8 @@ Porte porteInit(Point p1, Point p2){
 void drawPorte(Porte p, Texture t){
     glColor3f(1.0, 1.0, 1.0);
     
-    if ((p.p1.x - p.p2.x) * (p.p1.x - p.p2.x) >= (p.p1.z-p.p2.z)*(p.p2.z-p.p2.z)){
+    if ((p.p1.x - p.p2.x) * (p.p1.x - p.p2.x) >= (p.p1.z-p.p2.z)*(p.p1.z-p.p2.z)){
+        
         glEnable(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, t.identifiant);
         glBegin(GL_QUADS);
@@ -485,6 +486,7 @@ void drawPorte(Porte p, Texture t){
         glVertex3f(p.p2.x, p.p2.y, p.p2.z);
         glVertex3f(p.p1.x, p.p2.y, p.p2.z);
         glEnd();
+        
     }
 }
 
@@ -555,6 +557,7 @@ void maisonInit(Maison *maison){
                 // Création des portes
                 maison->piece[i][j][k].liste_mur[DROITE].porte = porteInit(creer_point(depart.x + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2, depart.y+hauteur, depart.z + decalage)
                                                                         , creer_point(depart.x + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2, depart.y+hauteur+HAUTEUR_PORTE, depart.z + decalage + LARGEUR_PORTE));
+                
                 maison->piece[i][j][k].liste_mur[DERRIERE].porte = porteInit(creer_point(depart.x + decalage, depart.y+hauteur, depart.z  + (taille_mur/2) - (LONGUEUR_PORTE/2) + decalage2)
                                                                         , creer_point(depart.x + decalage + LARGEUR_PORTE, depart.y+hauteur+HAUTEUR_PORTE, depart.z + (taille_mur/2) + (LONGUEUR_PORTE/2) +decalage2));
             }
@@ -607,4 +610,6 @@ void drawMaison(Maison maison, Texture t, Texture p){
             }
         }
     }
+
+    
 }   
